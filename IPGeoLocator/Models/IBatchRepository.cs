@@ -7,6 +7,9 @@ namespace IPGeoLocator.Models
 {
     public interface IBatchRepository
     {
-        public Guid CreateBatch(List<string> IPAddresses);
+        public void CreateBatch(Guid BatchID,List<string> IPAddresses);
+
+        public void ProcessBatch(Guid BatchID);
+
     }
 }

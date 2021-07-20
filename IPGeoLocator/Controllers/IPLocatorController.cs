@@ -35,10 +35,12 @@ namespace IPGeoLocator.Controllers
             return _ipLocatorService.GetIPDetails(IPAdress);
         }
         [HttpPost]
-        public Guid Post(List<string> IPAdresses)
+        public async Task<Guid> Post(List<string> IPAdresses)
         {
-
-            return _repo.CreateBatch(IPAdresses); ;
+            Guid batchID = Guid.NewGuid();
+            _repo.CreateBatch(batchID, IPAdresses);
+            _repo.ProcessBatch(batchID);
+            return (batchID); 
         }
     }
 }
