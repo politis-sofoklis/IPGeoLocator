@@ -1,3 +1,4 @@
+using IPGeoLocator.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,6 +29,7 @@ namespace IPGeoLocator
         {
 
             services.AddControllers();
+            services.AddTransient<IIPLocatorService,IPLocatorService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "IPGeoLocator", Version = "v1" });
