@@ -1,8 +1,10 @@
+using IPGeoLocator.Models;
 using IPGeoLocator.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,6 +32,9 @@ namespace IPGeoLocator
 
             services.AddControllers();
             services.AddTransient<IIPLocatorService,IPLocatorService>();
+            services.AddDbContext<IPLocatorDBContext>(options =>
+    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddTransient<IBatchRepository, BatchRepository>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "IPGeoLocator", Version = "v1" });

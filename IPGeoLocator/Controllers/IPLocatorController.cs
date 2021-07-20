@@ -19,17 +19,26 @@ namespace IPGeoLocator.Controllers
 
         private readonly IIPLocatorService _ipLocatorService;
 
+        private readonly IBatchRepository _repo;
 
-        public IPLocatorController(ILogger<IPLocatorController> logger , IIPLocatorService ipLocatorService  )
+
+        public IPLocatorController(ILogger<IPLocatorController> logger , IIPLocatorService ipLocatorService , IBatchRepository repo)
         {
             _logger = logger;
             _ipLocatorService = ipLocatorService;
+            _repo = repo;
         }
 
         [HttpGet]
         public IPDetails Get(string IPAdress)
         {
             return _ipLocatorService.GetIPDetails(IPAdress);
+        }
+        [HttpPost]
+        public Guid Post(List<string> IPAdresses)
+        {
+
+            return _repo.CreateBatch(IPAdresses); ;
         }
     }
 }
