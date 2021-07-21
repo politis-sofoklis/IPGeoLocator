@@ -8,6 +8,7 @@ namespace IPGeoLocator.Service
 {
     public interface IIPLocatorService
     {
-        IPDetails GetIPDetails(string IPAdress);
+         public  IPDetails GetIPDetails(string IPAdress);
+
     }
 }

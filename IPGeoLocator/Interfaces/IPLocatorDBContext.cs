@@ -30,7 +30,7 @@ namespace IPGeoLocator.Models
                 entity.Property(e => e.BatchId)
                     .ValueGeneratedNever()
                     .HasColumnName("BatchID");
-
+                entity.ToTable("Batches");
                 entity.Property(e => e.TimeStamp).HasColumnType("datetime");
             });
 

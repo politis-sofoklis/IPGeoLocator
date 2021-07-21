@@ -1,3 +1,4 @@
+using Hangfire;
 using IPGeoLocator.Models;
 using IPGeoLocator.Service;
 using Microsoft.AspNetCore.Builder;
@@ -33,12 +34,15 @@ namespace IPGeoLocator
             services.AddControllers();
             services.AddTransient<IIPLocatorService,IPLocatorService>();
             services.AddDbContext<IPLocatorDBContext>(options =>
-    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+    );
             services.AddTransient<IBatchRepository, BatchRepository>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "IPGeoLocator", Version = "v1" });
             });
+            services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddHangfireServer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,6 +65,7 @@ namespace IPGeoLocator
             {
                 endpoints.MapControllers();
             });
+            app.UseHangfireDashboard();
         }
     }
 }

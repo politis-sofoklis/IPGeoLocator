@@ -30,7 +30,7 @@ namespace IPGeoLocator.Service
         }
 
 
-        public IPDetails GetIPDetails(string IPAdress)
+        public  IPDetails GetIPDetails(string IPAdress)
         {
             HttpResponseMessage response = client.GetAsync(_uri + IPAdress).Result;
 
@@ -39,6 +39,8 @@ namespace IPGeoLocator.Service
             var deserializedResponse = JsonSerializer.Deserialize<IPLocatorResponseContract>(result);
             return TransformIPResponseContractToIPDetails(deserializedResponse);
         }
+
+
 
         private static IPDetails TransformIPResponseContractToIPDetails(IPLocatorResponseContract response)
         {
