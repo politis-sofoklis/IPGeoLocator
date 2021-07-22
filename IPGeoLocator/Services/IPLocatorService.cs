@@ -33,7 +33,6 @@ namespace IPGeoLocator.Service
         public  IPDetails GetIPDetails(string IPAdress)
         {
             HttpResponseMessage response = client.GetAsync(_uri + IPAdress).Result;
-
             response.EnsureSuccessStatusCode();
             string result = response.Content.ReadAsStringAsync().Result;
             var deserializedResponse = JsonSerializer.Deserialize<IPLocatorResponseContract>(result);

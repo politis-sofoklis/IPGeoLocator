@@ -1,4 +1,5 @@
-﻿using IPGeoLocator.Service;
+﻿using IPGeoLocator.Models;
+using IPGeoLocator.Service;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -70,6 +71,30 @@ namespace IPGeoLocator.Models
             ipbatch.IsRetrieved = true;
             _db.Update(ipbatch);
             _db.SaveChanges();
+        }
+
+        public IPBatchStatus GetBatchStatus(Guid BatchID)
+        {
+            var totalBatchIPdetails = IpBatches.Where(ipb => ipb.BatchId == BatchID);
+            int totalBatchIPs = totalBatchIPdetails.Count();
+            int retrievedBatchIPs = totalBatchIPdetails.Count(ipb => ipb.IsRetrieved == true);
+            var batchStartTimeStamp = Batches.SingleOrDefault(b => b.BatchId == BatchID).TimeStamp;
+            DateTime remainingTime = CalculateRemainingTime(retrievedBatchIPs, totalBatchIPs, batchStartTimeStamp);
+            var batchStatus = new IPBatchStatus{
+                BatchID = BatchID,
+                ProgressReport = $"{retrievedBatchIPs}/{totalBatchIPs}",
+                RemainingTime = $"{remainingTime.Hour} h, {remainingTime.Minute} m, {remainingTime.Second} s, {remainingTime.Millisecond} ms."
+            };
+            return batchStatus;
+        }
+
+        private static DateTime  CalculateRemainingTime (int retrievedBatchIPs,int totalBatchIPs, DateTime? batchStartTimeStamp)
+        {
+            int elapsedTimeInMs = Convert.ToInt32((DateTime.Now - batchStartTimeStamp).Value.TotalMilliseconds);
+            var remainingMs = (elapsedTimeInMs * (totalBatchIPs -retrievedBatchIPs)) / retrievedBatchIPs;
+            var remainingTime = new DateTime();
+            remainingTime = remainingTime.AddMilliseconds(remainingMs);
+            return remainingTime;
         }
     }
 }

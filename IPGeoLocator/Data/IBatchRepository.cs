@@ -11,5 +11,7 @@ namespace IPGeoLocator.Models
 
         public void ProcessBatch(Guid BatchID);
 
+        public IPBatchStatus GetBatchStatus(Guid BatchID);
+
     }
 }
