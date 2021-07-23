@@ -18,17 +18,14 @@ namespace IPGeoLocator.Controllers
     public class IPLocatorController : ControllerBase
     {
 
-        private readonly ILogger<IPLocatorController> _logger;
-
         private readonly IIPLocatorService _ipLocatorService;
 
         private readonly IBatchRepository _repo;
 
 
 
-        public IPLocatorController(ILogger<IPLocatorController> logger , IIPLocatorService ipLocatorService , IBatchRepository repo)
+        public IPLocatorController( IIPLocatorService ipLocatorService , IBatchRepository repo)
         {
-            _logger = logger;
             _ipLocatorService = ipLocatorService;
             _repo = repo;
         }

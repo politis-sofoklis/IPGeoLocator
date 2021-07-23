@@ -13,5 +13,6 @@ namespace IPGeoLocator.Models
 
         public IPBatchStatus GetBatchStatus(Guid BatchID);
 
+        public DateTime CalculateRemainingTime(int retrievedBatchIPs, int totalBatchIPs, DateTime? batchStartTimeStamp);
     }
 }

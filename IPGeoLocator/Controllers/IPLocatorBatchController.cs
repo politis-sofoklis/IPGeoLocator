@@ -18,16 +18,15 @@ namespace IPGeoLocator.Controllers
     public class IPLocatorBatchController : ControllerBase
     {
 
-        private readonly ILogger<IPLocatorBatchController> _logger;
+
 
 
         private readonly IBatchRepository _repo;
 
 
 
-        public IPLocatorBatchController(ILogger<IPLocatorBatchController> logger, IBatchRepository repo)
+        public IPLocatorBatchController( IBatchRepository repo)
         {
-            _logger = logger;
             _repo = repo;
         }
 

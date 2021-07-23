@@ -88,7 +88,7 @@ namespace IPGeoLocator.Models
             return batchStatus;
         }
 
-        private static DateTime  CalculateRemainingTime (int retrievedBatchIPs,int totalBatchIPs, DateTime? batchStartTimeStamp)
+        public  DateTime  CalculateRemainingTime (int retrievedBatchIPs,int totalBatchIPs, DateTime? batchStartTimeStamp)
         {
             int elapsedTimeInMs = Convert.ToInt32((DateTime.Now - batchStartTimeStamp).Value.TotalMilliseconds);
             var remainingMs = (elapsedTimeInMs * (totalBatchIPs -retrievedBatchIPs)) / retrievedBatchIPs;
