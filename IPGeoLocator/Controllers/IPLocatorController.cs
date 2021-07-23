@@ -39,7 +39,7 @@ namespace IPGeoLocator.Controllers
             return _ipLocatorService.GetIPDetails(IPAdress);
         }
         [HttpPost]
-        public   Guid Post(List<string> IPAdresses)
+        public  string Post(List<string> IPAdresses)
         {
             Guid batchID = Guid.NewGuid();
             var createJob = BackgroundJob.Enqueue(
@@ -47,7 +47,8 @@ namespace IPGeoLocator.Controllers
             BackgroundJob.ContinueJobWith(
                 createJob,
             () => _repo.ProcessBatch(batchID));
-            return batchID;
+            string batchURL = $"/IPLocatorBatch?BatchID={batchID}";
+            return batchURL;
 
         }
     }
