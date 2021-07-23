@@ -33,7 +33,22 @@ namespace IPGeoLocator.Service
         public  IPDetails GetIPDetails(string IPAdress)
         {
             HttpResponseMessage response = client.GetAsync(_uri + IPAdress).Result;
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception)
+            {
+                return new IPDetails {
+                    IP = IPAdress,
+                    CountryCode = "Could not Retrieve IP Data",
+                    CountryName = "Could not Retrieve IP Data",
+                    TimeZone = "Could not Retrieve IP Data",
+                    Latitude = 0,
+                    Longitude = 0
+                };
+            }
+
             string result = response.Content.ReadAsStringAsync().Result;
             var deserializedResponse = JsonSerializer.Deserialize<IPLocatorResponseContract>(result);
             return TransformIPResponseContractToIPDetails(deserializedResponse);
