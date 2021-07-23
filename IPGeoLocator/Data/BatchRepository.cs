@@ -45,23 +45,32 @@ namespace IPGeoLocator.Models
             _db.SaveChanges();
         }
 
-        public  void ProcessBatch(Guid BatchID)
+        public void ProcessBatch(Guid BatchID)
         {
 
             List<Ipbatch> IPsForProcess = new List<Ipbatch>();
             //Geting the IPs that belong to the Batch in a list
-            IPsForProcess.AddRange(_db.Ipbatches.Where(b => b.BatchId == BatchID));
+            var ipsOfBatch = _db.Ipbatches.Where(b => b.BatchId == BatchID);
+            if(ipsOfBatch == null)
+            {
+                return;
+            }
+            IPsForProcess.AddRange(ipsOfBatch);
             //Getting the details for each IP
             foreach (var ipb in IPsForProcess)
             {
                 var details = _ipLocatorService.GetIPDetails(ipb.Ip);
-                AddIPResultToDB(details,ipb.InternalCode);
+                AddIPResultToDB(details, ipb.InternalCode);
             }
         }
 
         private void AddIPResultToDB(IPDetails ipDetails, int ipInternalCode)
         {
             Ipbatch ipbatch = _db.Ipbatches.SingleOrDefault(ipb => ipb.InternalCode == ipInternalCode);
+            if(ipbatch == null)
+            {
+                return;
+            }
             ipbatch.Ip = ipDetails.IP;
             ipbatch.CountryCode = ipDetails.CountryCode;
             ipbatch.CountryName = ipDetails.CountryName;
@@ -79,12 +88,27 @@ namespace IPGeoLocator.Models
             int totalBatchIPs = totalBatchIPdetails.Count();
             int retrievedBatchIPs = totalBatchIPdetails.Count(ipb => ipb.IsRetrieved == true);
             var batchStartTimeStamp = Batches.SingleOrDefault(b => b.BatchId == BatchID).TimeStamp;
-            DateTime remainingTime = CalculateRemainingTime(retrievedBatchIPs, totalBatchIPs, batchStartTimeStamp);
-            var batchStatus = new IPBatchStatus{
+            var batchStatus = new IPBatchStatus
+            {
                 BatchID = BatchID,
-                ProgressReport = $"{retrievedBatchIPs}/{totalBatchIPs}",
-                RemainingTime = $"{remainingTime.Hour} h, {remainingTime.Minute} m, {remainingTime.Second} s, {remainingTime.Millisecond} ms."
+
             };
+            if (totalBatchIPdetails == null || totalBatchIPs ==0 || batchStartTimeStamp == null)
+            {
+                batchStatus.ProgressReport = "Error with calculating batch status";
+                batchStatus.RemainingTime = "Error with calculating remaining time";
+                return batchStatus;
+            }
+            batchStatus.ProgressReport = $"{retrievedBatchIPs}/{totalBatchIPs}";
+            if (retrievedBatchIPs == 0)
+            {
+                batchStatus.RemainingTime = $"IPs not yet retrived.Cannot calculate remaining time.";
+            }
+            else
+            {
+                DateTime remainingTime = CalculateRemainingTime(retrievedBatchIPs, totalBatchIPs, batchStartTimeStamp);
+                batchStatus.RemainingTime = $"{remainingTime.Hour} h, {remainingTime.Minute} m, {remainingTime.Second} s, {remainingTime.Millisecond} ms.";
+            }
             return batchStatus;
         }
 
